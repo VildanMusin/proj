@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
         System.out.println( Util.getConnection());
-        UserService userService = new UserServiceImpl();
+        UserService uswrService = new UserServiceImpl();
 
 
         userService.createUsersTable();
