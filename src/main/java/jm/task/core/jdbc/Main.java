@@ -13,16 +13,16 @@ public class Main {
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
         System.out.println( Util.getConnection());
-        UserService uswrService = new UserServiceImpl();
+        UserService userService = new UserServiceImpl();
 
 
         userService.createUsersTable();
 
 
-        userService.saveUser("Ivan", "Ivanov", (byte) 25);
-        userService.saveUser("Petr", "Petrov", (byte) 30);
-        userService.saveUser("Anna", "Orlova", (byte) 20);
-        userService.saveUser("Olga", "Smirnova", (byte) 35);
+          userService.saveUser("Ivan", "Ivanov", (byte) 25);
+         userService.saveUser("Petr", "Petrov", (byte) 30);
+         userService.saveUser("Anna", "Orlova", (byte) 20);
+         userService.saveUser("Olga", "Smirnova", (byte) 35);
 
 
         System.out.println("Все пользователи в базе данных:");
@@ -31,7 +31,7 @@ public class Main {
 
         userService.cleanUsersTable();
 
-        userService.dropUsersTable();
+      //  userService.dropUsersTable();
     }
     }
 

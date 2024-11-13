@@ -15,81 +15,118 @@ import java.util.List;
     }
 
     public void createUsersTable() {
-       String sql = "CREATE TABLE IF NOT EXISTS user (id BIGINT AUTO_INCREMENT, name VARCHAR(50), lastName VARCHAR(50), age TINYINT, PRIMARY KEY (id))";
-       try (Statement statement = connection.createStatement()) {
+       String sql = "CREATE TABLE IF NOT EXISTS \"User\" (" +
+               "id SERIAL PRIMARY KEY," +
+               "name VARCHAR(100)," +
+               "lastname VARCHAR(100)," +
+               "age INT" +
+               ")";
+
+       try (Connection connection = Util.getConnection();
+            Statement statement = connection.createStatement()) {
+
           statement.executeUpdate(sql);
-          System.out.println("Таблица создана.");
+          System.out.println("Таблица 'User' успешно создана!");
+
        } catch (SQLException e) {
-          System.out.println("Ошибка создания таблицы: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при создании таблицы!");
        }
     }
 
     public void dropUsersTable() {
-       String sql = "DROP TABLE IF EXISTS user";
-       try (Statement statement = connection.createStatement()) {
+       String sql = "DROP TABLE IF EXISTS \"User\"";
+
+       try (Connection connection = Util.getConnection();
+            Statement statement = connection.createStatement()) {
+
           statement.executeUpdate(sql);
-          System.out.println("Таблица удалена.");
+          System.out.println("Таблица 'User' удалена!");
+
        } catch (SQLException e) {
-          System.out.println("Ошибка удаления таблицы: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при удалении таблицы!");
        }
     }
 
     public void saveUser(String name, String lastname, byte age) {
-       String sql = "INSERT INTO `my-project`.user (name, lastName, age) VALUES (?, ?, ?)";
-       try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+       String sql = "INSERT INTO \"User\" (name, lastname, age) VALUES (?, ?, ?)";
+
+       try (Connection connection = Util.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
           preparedStatement.setString(1, name);
           preparedStatement.setString(2, lastname);
           preparedStatement.setByte(3, age);
+
           preparedStatement.executeUpdate();
           System.out.println("Пользователь добавлен: " + name + " " + lastname);
+
        } catch (SQLException e) {
-          System.out.println("Ошибка добавления пользователя: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при добавлении пользователя!");
        }
     }
 
     public void removeUserById(long id) {
-       String sql = "DELETE FROM user WHERE id = ?";
-       try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+       String sql = "DELETE FROM \"User\" WHERE id = ?";
+
+       try (Connection connection = Util.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
           preparedStatement.setLong(1, id);
-          int rowsDeleted = preparedStatement.executeUpdate();
-          if (rowsDeleted > 0) {
-             System.out.println("Пользователь с ID " + id + " удален.");
-          } else {
-             System.out.println("Пользователь с таким ID не найден.");
-          }
+          preparedStatement.executeUpdate();
+          System.out.println("Пользователь с id = " + id + " удалён!");
+
        } catch (SQLException e) {
-          System.out.println("Ошибка удаления пользователя: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при удалении пользователя!");
        }
     }
 
     public List<User> getAllUsers() {
 
        List<User> users = new ArrayList<>();
-       String sql = "SELECT * FROM user";
-       try (Statement statement = connection.createStatement();
+       String sql = "SELECT * FROM \"User\"";
+
+       try (Connection connection = Util.getConnection();
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql)) {
+
           while (resultSet.next()) {
-             User user = new User();
-             user.setId(resultSet.getLong("id"));
-             user.setName(resultSet.getString("name"));
-             user.setLastName(resultSet.getString("lastName"));
-             user.setAge(resultSet.getByte("age"));
-             users.add(user);
+             // Извлечение данных из ResultSet
+             long id = resultSet.getLong("id");
+             String name = resultSet.getString("name");
+             String lastName = resultSet.getString("lastname");
+             byte age = resultSet.getByte("age");
+
+             // Проверка значений
+             System.out.println("id: " + id + ", name: " + name + ", lastName: " + lastName + ", age: " + age);
+
+
           }
-          System.out.println("Список пользователей получен.");
+
        } catch (SQLException e) {
-          System.out.println("Ошибка получения пользователей: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при получении пользователей!");
        }
+
        return users;
             }
 
     public void cleanUsersTable() {
-       String sql = "TRUNCATE TABLE user";
-       try (Statement statement = connection.createStatement()) {
-          statement.executeUpdate(sql);
-          System.out.println("Таблица очищена.");
+       String sql = "DELETE FROM \"User\"";
+
+       try (Connection connection = Util.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+          preparedStatement.executeUpdate();
+          System.out.println("Таблица 'User' очищена!");
+
        } catch (SQLException e) {
-          System.out.println("Ошибка очистки таблицы: " + e.getMessage());
+          e.printStackTrace();
+          System.out.println("Ошибка при очистке таблицы!");
        }
     }
 
